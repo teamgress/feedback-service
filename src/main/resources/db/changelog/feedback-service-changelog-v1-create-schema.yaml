@@ -1,0 +1,144 @@
+databaseChangeLog:
+  - changeSet:
+      id: feedback-service-v1-create-feedback-criteria-table
+      author: Babis Amas
+      changes:
+        - createTable:
+            tableName: feedback_criteria
+            columns:
+              - column:
+                  name: criteria_id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: company_id
+                  type: bigint
+                  constraints:
+                    nullable: true
+              - column:
+                  name: name
+                  type: varchar(255)
+              - column:
+                  name: description
+                  type: varchar(1000)
+              - column:
+                  name: is_generic
+                  type: boolean
+                  defaultValue: false
+
+  - changeSet:
+      id: feedback-service-v1-create-feedback-template-table
+      author: Babis Amas
+      changes:
+        - createTable:
+            tableName: feedback_template
+            columns:
+              - column:
+                  name: template_id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: name
+                  type: varchar(255)
+              - column:
+                  name: description
+                  type: varchar(1000)
+
+  - changeSet:
+      id: feedback-service-v1-create-template-criteria-table
+      author: Babis Amas
+      changes:
+        - createTable:
+            tableName: template_criteria
+            columns:
+              - column:
+                  name: template_criteria_id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: template_id
+                  type: bigint
+                  constraints:
+                    foreignKeyName: fk_template_criteria_template
+                    references: feedback_template(template_id)
+              - column:
+                  name: criteria_id
+                  type: bigint
+                  constraints:
+                    foreignKeyName: fk_template_criteria_criteria
+                    references: feedback_criteria(criteria_id)
+              - column:
+                  name: weight
+                  type: integer
+
+  - changeSet:
+      id: feedback-service-v1-create-feedback-table
+      author: Babis Amas
+      changes:
+        - createTable:
+            tableName: feedback
+            columns:
+              - column:
+                  name: feedback_id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: user_id
+                  type: bigint
+              - column:
+                  name: submitted_by
+                  type: bigint
+              - column:
+                  name: template_id
+                  type: bigint
+                  constraints:
+                    foreignKeyName: fk_feedback_template
+                    references: feedback_template(template_id)
+              - column:
+                  name: timestamp
+                  type: timestamp
+
+  - changeSet:
+      id: feedback-service-v1-create-feedback-response-table
+      author: Babis Amas
+      changes:
+        - createTable:
+            tableName: feedback_response
+            columns:
+              - column:
+                  name: response_id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: feedback_id
+                  type: bigint
+                  constraints:
+                    foreignKeyName: fk_response_feedback
+                    references: feedback(feedback_id)
+              - column:
+                  name: criteria_id
+                  type: bigint
+                  constraints:
+                    foreignKeyName: fk_response_criteria
+                    references: feedback_criteria(criteria_id)
+              - column:
+                  name: rating
+                  type: integer
+              - column:
+                  name: comment
+                  type: varchar(1000)
